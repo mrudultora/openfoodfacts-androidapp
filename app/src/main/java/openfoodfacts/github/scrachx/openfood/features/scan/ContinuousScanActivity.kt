@@ -19,7 +19,6 @@ import android.content.Context
 import android.content.Intent
 import android.hardware.Camera
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.view.*
 import android.view.Gravity.CENTER
@@ -28,7 +27,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
@@ -57,7 +55,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import openfoodfacts.github.scrachx.openfood.AppFlavors
+import openfoodfacts.github.scrachx.openfood.AppFlavors.OFF
 import openfoodfacts.github.scrachx.openfood.AppFlavors.isFlavors
 import openfoodfacts.github.scrachx.openfood.R
 import openfoodfacts.github.scrachx.openfood.app.OFFApplication
@@ -128,8 +126,8 @@ class ContinuousScanActivity : AppCompatActivity() {
     private var popupMenu: PopupMenu? = null
     private var summaryProductPresenter: SummaryProductPresenter? = null
 
-    private val productActivityResultLauncher = registerForActivityResult(StartActivityForResult())
-    { result -> if (result.resultCode == RESULT_OK) lastBarcode?.let { setShownProduct(it) } }
+    private val productActivityResultLauncher = registerForActivityResult(ProductEditActivity.EditProductContract())
+    { result -> if (result) lastBarcode?.let { setShownProduct(it) } }
 
     /**
      * Used by screenshot tests.
@@ -143,11 +141,6 @@ class ContinuousScanActivity : AppCompatActivity() {
         binding.barcodeScanner.pause()
         binding.imageForScreenshotGenerationOnly.visibility = View.VISIBLE
         setShownProduct(barcode)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
-        productDisp?.dispose()
-        super.onSaveInstanceState(outState, outPersistentState)
     }
 
     /**
@@ -283,14 +276,14 @@ class ContinuousScanActivity : AppCompatActivity() {
                 }
     }
 
-    private fun quickViewCheckNutriScore(product: Product) = if (isFlavors(AppFlavors.OFF)) {
+    private fun quickViewCheckNutriScore(product: Product) = if (isFlavors(OFF)) {
         binding.quickViewNutriScore.visibility = View.VISIBLE
         binding.quickViewNutriScore.setImageResource(product.getNutriScoreResource())
     } else {
         binding.quickViewNutriScore.visibility = View.GONE
     }
 
-    private fun quickViewCheckNova(product: Product) = if (isFlavors(AppFlavors.OFF)) {
+    private fun quickViewCheckNova(product: Product) = if (isFlavors(OFF)) {
         binding.quickViewNovaGroup.visibility = View.VISIBLE
         binding.quickViewAdditives.visibility = View.VISIBLE
         binding.quickViewNovaGroup.setImageResource(product.getNovaGroupResource())
@@ -317,9 +310,7 @@ class ContinuousScanActivity : AppCompatActivity() {
             override fun showAllergens(allergens: List<AllergenName>) {
                 val data = AllergenHelper.computeUserAllergen(product, allergens)
                 binding.callToActionImageProgress.visibility = View.GONE
-                if (data.isEmpty()) {
-                    return
-                }
+                if (data.isEmpty()) return
                 val iconicsDrawable = IconicsDrawable(this@ContinuousScanActivity, GoogleMaterial.Icon.gmd_warning)
                         .color(IconicsColor.colorInt(ContextCompat.getColor(this@ContinuousScanActivity, R.color.white)))
                         .size(IconicsSize.dp(24))
@@ -397,9 +388,7 @@ class ContinuousScanActivity : AppCompatActivity() {
     }
 
     private fun navigateToProductAddition(product: Product?) {
-        productActivityResultLauncher.launch(Intent(this, ProductEditActivity::class.java).apply {
-            putExtra(ProductEditActivity.KEY_EDIT_PRODUCT, product)
-        })
+        productActivityResultLauncher.launch(product)
     }
 
     private fun showAllViews() {
@@ -515,8 +504,8 @@ class ContinuousScanActivity : AppCompatActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
         productDisp?.dispose()
+        super.onSaveInstanceState(outState)
     }
 
     override fun onPause() {
@@ -545,9 +534,8 @@ class ContinuousScanActivity : AppCompatActivity() {
 
     @Subscribe
     fun onEventBusProductNeedsRefreshEvent(event: ProductNeedsRefreshEvent) {
-        val lastBarcode = lastBarcode ?: return
         if (event.barcode == lastBarcode) {
-            runOnUiThread { setShownProduct(lastBarcode) }
+            runOnUiThread { setShownProduct(event.barcode) }
         }
     }
 

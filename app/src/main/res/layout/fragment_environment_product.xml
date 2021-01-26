@@ -76,13 +76,23 @@
                     android:visibility="gone"
                     tools:visibility="visible" />
 
+                <TextView
+                    android:id="@+id/add_label_origin_prompt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="6dp"
+                    android:visibility="gone"
+                    android:gravity="center"
+                    android:textSize="@dimen/font_normal"
+                    android:padding="@dimen/padding_too_short"
+                    tools:text="@string/add_origins_prompt_text"
+                    tools:visibility="visible"/>
+
                 <androidx.cardview.widget.CardView
                     android:id="@+id/carbon_footprint_cv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="8dp"
                     app:cardElevation="4dp">
 
                     <TextView
@@ -103,9 +113,7 @@
                     android:id="@+id/environment_info_cv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
                     app:cardElevation="4dp">
 
                     <TextView
@@ -123,12 +131,31 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/packaging_cv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:cardElevation="4dp">
+
+                    <TextView
+                        android:id="@+id/packaging_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/spacing_normal"
+                        android:layout_marginTop="@dimen/spacing_tiny"
+                        android:layout_marginRight="@dimen/spacing_normal"
+                        android:layout_marginBottom="@dimen/spacing_tiny"
+                        android:padding="@dimen/spacing_small"
+                        android:textIsSelectable="true"
+                        android:textSize="@dimen/font_normal" />
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
                     android:id="@+id/recycling_instructions_discard_cv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
                     app:cardElevation="4dp">
 
                     <TextView
@@ -149,9 +176,7 @@
                     android:id="@+id/recycling_instructions_recycle_cv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
                     app:cardElevation="4dp">
 
                     <TextView

@@ -102,8 +102,10 @@ dependencies {
     // Database
     implementation("org.greenrobot:greendao:${rootProject.extra["greendaoVersion"]}")
 
-    //Event bus
-    implementation("org.greenrobot:eventbus:3.2.0")
+    // Event bus and index
+    val eventBusVersion = "3.2.0"
+    implementation("org.greenrobot:eventbus:$eventBusVersion")
+    kapt("org.greenrobot:eventbus-annotation-processor:$eventBusVersion")
 
     implementation("com.google.android.material:material:1.2.1")
 
@@ -206,8 +208,8 @@ android {
         minSdkVersion(16)
         targetSdkVersion(30)
 
-        versionCode = 362
-        versionName = "3.6.2"
+        versionCode = 431
+        versionName = "3.6.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -341,10 +343,17 @@ android {
         // avoid "Method ... not mocked."
         unitTests.isReturnDefaultValues = true
         execution = "ANDROIDX_TEST_ORCHESTRATOR"
+
     }
 }
 
-greendao { schemaVersion(18) }
+kapt {
+    arguments {
+        arg("eventBusIndex", "openfoodfacts.github.scrachx.openfood.app.OFFEventsIndex")
+    }
+}
+
+greendao { schemaVersion(20) }
 
 
 

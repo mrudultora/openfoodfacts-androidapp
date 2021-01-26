@@ -62,17 +62,16 @@
                         <LinearLayout
                             android:id="@+id/header_product_details_layout"
                             android:layout_width="0dp"
-                            android:layout_height="0dp"
-
+                            android:layout_height="wrap_content"
                             android:layout_marginEnd="@dimen/spacing_small"
                             android:layout_marginRight="@dimen/spacing_small"
                             android:gravity="center_vertical"
                             android:orientation="vertical"
-                            app:layout_constraintBottom_toBottomOf="@+id/front_picture_layout"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/front_picture_layout"
                             app:layout_constraintRight_toLeftOf="@id/front_picture_layout"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/front_picture_layout">
+                            app:layout_constraintTop_toTopOf="parent">
 
                             <TextView
                                 android:id="@+id/textNameProduct"
@@ -152,6 +151,7 @@
                     <LinearLayout
                         android:id="@+id/action_compare_button_layout"
                         style="@style/ActionButtonLayout"
+                        android:padding="@dimen/spacing_tiny"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -175,6 +175,7 @@
                     <LinearLayout
                         android:id="@+id/action_add_to_list_button_layout"
                         style="@style/ActionButtonLayout"
+                        android:padding="@dimen/spacing_tiny"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -197,6 +198,7 @@
                     <LinearLayout
                         android:id="@+id/action_edit_button_layout"
                         style="@style/ActionButtonLayout"
+                        android:padding="@dimen/spacing_tiny"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -220,6 +222,7 @@
                     <LinearLayout
                         android:id="@+id/action_share_button_layout"
                         style="@style/ActionButtonLayout"
+                        android:padding="@dimen/spacing_tiny"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         app:layout_constrainedWidth="true"
@@ -242,6 +245,25 @@
                     </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <HorizontalScrollView
+                    android:id="@+id/list_chips_sv"
+                    android:layout_width="match_parent"
+                    android:background="@color/grey_300"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none">
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/list_chips"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        tools:visibility="visible"
+                        android:paddingStart="@dimen/padding_short"
+                        android:paddingEnd="@dimen/padding_short"
+                        app:singleLine="true" />
+
+                </HorizontalScrollView>
 
                 <LinearLayout
                     android:id="@+id/analysisContainer"
@@ -344,7 +366,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_margin="@dimen/spacing_normal"
-                        android:layout_marginTop="8dp"
                         android:visibility="gone"
                         app:drawableLeftCompat="@drawable/ic_add_box_blue_18dp"
                         app:drawableStartCompat="@drawable/ic_add_box_blue_18dp"
@@ -353,6 +374,21 @@
                         app:layout_constraintTop_toBottomOf="@+id/grades_wrapper"
                         tools:text="@string/add_nutrition_facts_for_nutriscore"
                         tools:visibility="visible" />
+
+                    <openfoodfacts.github.scrachx.openfood.features.shared.views.TipBox
+                        android:id="@+id/tipBoxEcoScore"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_small"
+                        app:identifier="showEcoScorePrompt"
+                        app:backgroundColor="@color/md_light_green_500"
+                        app:textColor="@color/white"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/add_nutriscore_prompt"
+                        app:message="@string/couldnot_compute_ecoscore_prompt_text"
+                        app:shouldDisplayImmediately="false" />
+
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

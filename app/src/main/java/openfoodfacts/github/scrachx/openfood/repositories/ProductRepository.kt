@@ -34,6 +34,9 @@ import openfoodfacts.github.scrachx.openfood.models.entities.category.*
 import openfoodfacts.github.scrachx.openfood.models.entities.country.Country
 import openfoodfacts.github.scrachx.openfood.models.entities.ingredient.*
 import openfoodfacts.github.scrachx.openfood.models.entities.label.*
+import openfoodfacts.github.scrachx.openfood.models.entities.states.States
+import openfoodfacts.github.scrachx.openfood.models.entities.states.StatesName
+import openfoodfacts.github.scrachx.openfood.models.entities.states.StatesNameDao
 import openfoodfacts.github.scrachx.openfood.models.entities.tag.Tag
 import openfoodfacts.github.scrachx.openfood.network.ApiFields
 import openfoodfacts.github.scrachx.openfood.network.CommonApiManager.analysisDataApi
@@ -41,7 +44,6 @@ import openfoodfacts.github.scrachx.openfood.network.CommonApiManager.robotoffAp
 import openfoodfacts.github.scrachx.openfood.repositories.TaxonomiesManager.getTaxonomyData
 import openfoodfacts.github.scrachx.openfood.utils.getLoginPreferences
 import org.greenrobot.greendao.query.WhereCondition.StringCondition
-import java.util.*
 
 /**
  * This is a repository class which implements repository interface.
@@ -56,12 +58,12 @@ object ProductRepository {
      *
      * @return The list of Labels.
      */
-    fun reloadLabelsFromServer(): Single<List<Label>> =
+    fun reloadLabelsFromServer() =
             getTaxonomyData(Taxonomy.LABEL, this, true, OFFApplication.daoSession.labelDao)
 
-    fun loadLabels(lastModifiedDate: Long): Single<List<Label>> = analysisDataApi.getLabels()
+    fun loadLabels(lastModifiedDate: Long) = analysisDataApi.getLabels()
             .map { it.map() }
-            .doOnSuccess { labels: List<Label> ->
+            .doOnSuccess { labels ->
                 saveLabels(labels)
                 updateLastDownloadDateInSettings(Taxonomy.LABEL, lastModifiedDate)
             }
@@ -71,10 +73,10 @@ object ProductRepository {
      *
      * @return The list of Tags.
      */
-    fun reloadTagsFromServer(): Single<List<Tag>> =
+    fun reloadTagsFromServer() =
             getTaxonomyData(Taxonomy.TAGS, this, true, OFFApplication.daoSession.tagDao)
 
-    fun loadTags(lastModifiedDate: Long): Single<List<Tag>> = analysisDataApi.getTags()
+    fun loadTags(lastModifiedDate: Long) = analysisDataApi.getTags()
             .map { it.tags }
             .doOnSuccess {
                 saveTags(it)
@@ -130,7 +132,7 @@ object ProductRepository {
      *
      * @return The list of categories.
      */
-    fun reloadCategoriesFromServer(): Single<List<Category>> =
+    fun reloadCategoriesFromServer() =
             getTaxonomyData(Taxonomy.CATEGORY, this, true, OFFApplication.daoSession.categoryDao)
 
     fun getCategories() = getTaxonomyData(Taxonomy.CATEGORY, this, false, OFFApplication.daoSession.categoryDao)
@@ -186,6 +188,22 @@ object ProductRepository {
                 saveIngredients(it)
                 updateLastDownloadDateInSettings(Taxonomy.INGREDIENT, lastModifiedDate)
             }
+
+    /**
+     * Load states from the server or local database
+     *
+     * @return The list of states.
+     */
+    fun reloadStatesFromServer(): Single<List<States>> =
+            getTaxonomyData(Taxonomy.STATES, this, true, OFFApplication.daoSession.statesDao)
+
+    fun loadStates(lastModifiedDate: Long): Single<List<States>> = analysisDataApi.getStates()
+            .map { it.map() }
+            .doOnSuccess{
+                saveState(it)
+                updateLastDownloadDateInSettings(Taxonomy.STATES,lastModifiedDate)
+            }
+
 
     /**
      * This function set lastDownloadtaxonomy setting
@@ -381,6 +399,31 @@ object ProductRepository {
     }
 
     /**
+     * States saving to local database
+     *
+     * @param states The list of states to be saved.
+     *
+     *
+     * states and statesName has One-To-Many relationship, therefore we need to save them separately.
+     */
+    private fun saveState(states: List<States>) {
+        OFFApplication.daoSession.database.beginTransaction()
+        try {
+            states.forEach { state ->
+                OFFApplication.daoSession.statesDao.insertOrReplace(state)
+                state.names.forEach {
+                    OFFApplication.daoSession.statesNameDao.insertOrReplace(it)
+                }
+            }
+            OFFApplication.daoSession.database.setTransactionSuccessful()
+        } catch (e: Exception) {
+            Log.e(LOG_TAG, "saveStates", e)
+        } finally {
+            OFFApplication.daoSession.database.endTransaction()
+        }
+    }
+
+    /**
      * Ingredient saving to local database
      *
      * @param ingredient The ingredient to be saved.
@@ -566,13 +609,29 @@ object ProductRepository {
             getAllergenByTagAndLanguageCode(allergenTag, ApiFields.Defaults.DEFAULT_LANGUAGE)
 
     /**
+     * Loads translated states from the local database by unique tag of states and language code
+     *
+     * @param statesTag is a unique Id of states
+     * @param languageCode is a 2-digit language code
+     * @return The translated states name
+     */
+    fun getStatesByTagAndLanguageCode(statesTag: String, languageCode: String?) = Single.fromCallable {
+        OFFApplication.daoSession.statesNameDao.queryBuilder()
+                .where(StatesNameDao.Properties.StatesTag.eq(statesTag),
+                        StatesNameDao.Properties.LanguageCode.eq(languageCode))
+                .unique()
+                ?: StatesName(statesTag, statesTag.split(":").component1(), statesTag.split(":").component2())
+    }.subscribeOn(Schedulers.io())
+
+
+    /**
      * Loads Robotoff question from the local database by code and lang of question.
      *
      * @param code for the question
      * @param lang is language of the question
      * @return The single question
      */
-    fun getSingleProductQuestion(code: String?, lang: String?) = robotoffApi.getProductQuestions(code, lang, 1)
+    fun getProductQuestion(code: String, lang: String) = robotoffApi.getProductQuestions(code, lang, 1)
             .map { it.questions }
             .flatMapMaybe { if (it.isEmpty()) Maybe.empty() else Maybe.just(it[0]) }
 

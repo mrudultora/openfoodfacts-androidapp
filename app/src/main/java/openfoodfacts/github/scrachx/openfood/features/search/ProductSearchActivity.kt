@@ -39,6 +39,7 @@ import openfoodfacts.github.scrachx.openfood.features.scan.ContinuousScanActivit
 import openfoodfacts.github.scrachx.openfood.features.shared.BaseActivity
 import openfoodfacts.github.scrachx.openfood.models.Product
 import openfoodfacts.github.scrachx.openfood.models.Search
+import openfoodfacts.github.scrachx.openfood.models.SearchInfo
 import openfoodfacts.github.scrachx.openfood.network.OpenFoodAPIClient
 import openfoodfacts.github.scrachx.openfood.repositories.ProductRepository
 import openfoodfacts.github.scrachx.openfood.utils.*
@@ -190,7 +191,7 @@ class ProductSearchActivity : BaseActivity() {
 
     private fun setupHungerGames() {
         val sharedPref = PreferenceManager.getDefaultSharedPreferences(this)
-        val actualCountryTag = sharedPref.getString(LocaleHelper.USER_COUNTRY_PREFERENCE_KEY, "")
+        val actualCountryTag = sharedPref.getString(getString(R.string.pref_country_key), "")
         if ("" == actualCountryTag) {
             ProductRepository.getCountryByCC2OrWorld(LocaleHelper.getLocaleFromContext().country)
                     .observeOn(AndroidSchedulers.mainThread())
