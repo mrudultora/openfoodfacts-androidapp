@@ -92,7 +92,6 @@ class ProductEditIngredientsFragment : ProductEditFragment() {
             (activity as? ProductEditActivity)?.addToPhotoMap(image, 1)
             hideImageProgress(false, getString(R.string.image_uploaded_successfully))
         }
-        binding.btnExtractIngredients.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_compare_arrows_black_18dp, 0, 0, 0)
         val intent = if (activity == null) null else requireActivity().intent
         if (intent != null && intent.getBooleanExtra(ProductEditActivity.KEY_MODIFY_NUTRITION_PROMPT, false) && !intent
                         .getBooleanExtra(ProductEditActivity.KEY_MODIFY_CATEGORY_PROMPT, false)) {
@@ -450,5 +449,5 @@ class ProductEditIngredientsFragment : ProductEditFragment() {
         binding.ocrProgressText.visibility = View.GONE
     }
 
-    private val dps50ToPixels by lazy { dpsToPixel(50, requireContext()) }
+    private val dps50ToPixels by lazy { requireContext().dpsToPixel(50) }
 }

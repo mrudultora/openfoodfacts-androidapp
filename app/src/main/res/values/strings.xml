@@ -310,112 +310,6 @@
     </string-array>
 
 
-    <string-array name="product_images_fields_array" translatable="false">
-        <item>product_name</item>
-        <item>generic_name</item>
-        <item>code</item>
-        <item>lang</item>
-        <item>image_small_url</item>
-        <item>images</item>
-        <item>image_front_url</item>
-        <item>image_ingredients_url</item>
-        <item>image_nutrition_url</item>
-        <item>image_packaging_url</item>
-        <item>image_url</item>
-        <item>selected_images</item>
-    </string-array>
-
-
-    <string-array name="product_all_fields_array" translatable="false">
-        <item>product_name</item>
-        <item>generic_name</item>
-        <item>image_small_url</item>
-        <item>image_front_url</item>
-        <item>image_ingredients_url</item>
-        <item>image_nutrition_url</item>
-        <item>image_packaging_url</item>
-        <item>image_url</item>
-        <item>selected_images</item>
-        <item>languages_codes</item>
-        <item>vitamins_tags</item>
-        <item>minerals_tags</item>
-        <item>amino_acids_tags</item>
-        <item>other_nutritional_substances_tags</item>
-        <item>url</item>
-        <item>code</item>
-        <item>traces_tags</item>
-        <item>ingredients_that_may_be_from_palm_oil_tags</item>
-        <item>additives_tags</item>
-        <item>allergens_hierarchy</item>
-        <item>manufacturing_places</item>
-        <item>nutriments</item>
-        <item>ingredients_from_palm_oil_tags</item>
-        <item>brands_tags</item>
-        <item>traces</item>
-        <item>categories_tags</item>
-        <item>ingredients_text</item>
-        <item>ingredients_from_or_that_may_be_from_palm_oil_n</item>
-        <item>serving_size</item>
-        <item>allergens_tags</item>
-        <item>allergens</item>
-        <item>origins</item>
-        <item>stores</item>
-        <item>nutrition_grade_fr</item>
-        <item>nutrition_grades_tags</item>
-        <item>nutrient_levels</item>
-        <item>ecoscore_grade</item>
-        <item>countries</item>
-        <item>countries_tags</item>
-        <item>brands</item>
-        <item>packaging</item>
-        <item>labels_tags</item>
-        <item>labels_hierarchy</item>
-        <item>cities_tags</item>
-        <item>quantity</item>
-        <item>ingredients_from_palm_oil_n</item>
-        <item>link</item>
-        <item>emb_codes_tags</item>
-        <item>states_tags</item>
-        <item>creator</item>
-        <item>created_t</item>
-        <item>last_modified_t</item>
-        <item>last_modified_by</item>
-        <item>editors_tags</item>
-        <item>nova_groups</item>
-        <item>lang</item>
-        <item>purchase_places</item>
-        <item>nutrition_data_per</item>
-        <item>no_nutrition_data</item>
-        <item>other</item>
-        <item>other_information</item>
-        <item>conservation_conditions</item>
-        <item>recycling_instructions_to_discard</item>
-        <item>recycling_instructions_to_recycle</item>
-        <item>warning</item>
-        <item>customer_service</item>
-        <item>environment_infocard</item>
-        <item>environment_impact_level_tags</item>
-        <item>ingredients_analysis_tags</item>
-        <item>ingredients</item>
-        <item>states_tags</item>
-    </string-array>
-    <string-array name="fields_array" translatable="false">
-        <item>product_name</item>
-        <item>generic_name</item>
-        <item>ingredients_text</item>
-        <item>other_information</item>
-        <item>conservation_conditions</item>
-        <item>recycling_instructions_to_discard</item>
-        <item>recycling_instructions_to_recycle</item>
-        <item>warning</item>
-        <item>attribute_groups</item>
-        <item>customer_service</item>
-        <item>image_front_url</item>
-        <item>image_ingredients_url</item>
-        <item>image_nutrition_url</item>
-        <item>image_packaging_url</item>
-    </string-array>
-
     <string name="help_translate_ingredients_link" translatable="false">https://world-%1$s.openfoodfacts.org/ingredients?translate=1</string>
 
     <!-- Content Description -->
@@ -711,7 +605,7 @@
     <!--Just replace "world" by "world-fr", "world-de"… do not translate "faq" -->
     <string name="faq_url">https://world.openfoodfacts.org/faq</string>
     <!--Just replace "world" by "world-fr", "world-de"… do not translate "hunger-game" -->
-    <string name="hunger_game_url">https://world.openfoodfacts.org/hunger-game</string>
+    <string name="hunger_game_url">https://hunger.openfoodfacts.org/</string>
     <!--Just replace "world" by "world-fr", "world-de"… do not translate the end of the url -->
     <string name="advanced_search_url" translatable="false">https://world.openfoodfacts.org/cgi/search.pl</string>
     <!--Just replace "world" by "fr", "de"… do not translate the "nutriscore"-->
@@ -769,7 +663,7 @@
     <string name="by_barcode">Barcode</string>
     <string name="by_time">Recently Viewed</string>
     <string name="sort">Sort</string>
-    <string name="by_nutrition_grade">Nutrition Grade</string>
+    <string name="by_nutrition_grade">Nutri-Score</string>
     <string name="sort_by">Sort by</string>
 
     <!-- strings related to share images -->
@@ -832,6 +726,8 @@
     <string name="choose_nutrient">Choose a nutrient</string>
     <string name="error_adding_product_details">Something went wrong while trying to add product details</string>
     <string name="hint_product_URL">Link of the official page of the product</string>
+    <string name="extract_url">Extract URL from QR-code</string>
+    <string name="search_url">Search for official page URL</string>
     <string name="product_language">Product language : </string>
     <string name="hint_emb_codes">Examples: EMB 53062, FR 62.448.034 CE, 84 R 20, 33 RECOLTANT 522, FSSL 10013011001409</string>
     <string name="official_website">Official website</string>
@@ -1091,6 +987,10 @@
     <string name="day">Day</string>
     <string name="night">Night</string>
     <string name="required_for_ecoscore">(Required to calculate the Eco-Score)</string>
-    <string name="hint_origin">Examples: USA, French, Italy</string>
+    <string name="hint_origin">Examples: USA, France, Italy</string>
     <string name="report_email_chooser_title">Send a report email</string>
+
+    <!-- Changelog String -->
+    <string name="changelog_translation_help">Want to see this changelog in %s?\nJoin the translation team!</string>
+    <string name="whats_new">What\'s new with Open Food Facts?</string>
 </resources>

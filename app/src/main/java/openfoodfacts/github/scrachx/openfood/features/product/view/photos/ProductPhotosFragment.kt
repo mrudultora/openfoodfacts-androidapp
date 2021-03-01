@@ -11,8 +11,11 @@ import io.reactivex.rxkotlin.addTo
 import openfoodfacts.github.scrachx.openfood.BuildConfig
 import openfoodfacts.github.scrachx.openfood.databinding.FragmentProductPhotosBinding
 import openfoodfacts.github.scrachx.openfood.features.FullScreenActivityOpener
+import openfoodfacts.github.scrachx.openfood.features.product.edit.ProductEditActivity
 import openfoodfacts.github.scrachx.openfood.features.shared.BaseFragment
 import openfoodfacts.github.scrachx.openfood.images.ImageNameJsonParser
+import openfoodfacts.github.scrachx.openfood.models.ProductState
+import openfoodfacts.github.scrachx.openfood.network.CommonApiManager
 import openfoodfacts.github.scrachx.openfood.network.OpenFoodAPIClient
 import openfoodfacts.github.scrachx.openfood.utils.requireProductState
 
@@ -39,7 +42,7 @@ class ProductPhotosFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val product = requireProductState().product!!
-        openFoodAPIClient.rawAPI
+        CommonApiManager.productsApi
                 .getProductImages(product.code)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError { Log.e(LOG_TAG, "Cannot download images from server", it) }
@@ -87,5 +90,10 @@ class ProductPhotosFragment : BaseFragment() {
 
     companion object {
         private val LOG_TAG = ProductPhotosFragment::class.simpleName
+        fun newInstance(productState: ProductState) = ProductPhotosFragment().apply {
+            arguments = Bundle().apply {
+                putSerializable(ProductEditActivity.KEY_STATE, productState)
+            }
+        }
     }
 }

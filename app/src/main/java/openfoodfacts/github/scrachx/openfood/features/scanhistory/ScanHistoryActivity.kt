@@ -20,7 +20,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NavUtils
 import androidx.core.content.ContextCompat
-import androidx.core.net.toFile
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.MaterialDialog
@@ -56,6 +55,11 @@ class ScanHistoryActivity : BaseActivity(), SwipeController.Actions {
      * boolean to determine if image should be loaded or not
      */
     private val isLowBatteryMode by lazy { this.isDisableImageLoad() && this.isBatteryLevelLow() }
+
+    /**
+     * boolean to determine if menu buttons should be visible or not
+     */
+    private var showMenuButtons = false
 
     private lateinit var adapter: ScanHistoryAdapter
 
@@ -149,8 +153,9 @@ class ScanHistoryActivity : BaseActivity(), SwipeController.Actions {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_history, menu)
-        menu.findItem(R.id.action_export_all_history).isVisible = adapter.itemCount != 0
-        menu.findItem(R.id.action_remove_all_history).isVisible = adapter.itemCount != 0
+        menu.findItem(R.id.action_export_all_history).isVisible = showMenuButtons
+        menu.findItem(R.id.action_remove_all_history).isVisible = showMenuButtons
+        menu.findItem(R.id.sort_history).isVisible = showMenuButtons
         return true
     }
 
@@ -168,6 +173,8 @@ class ScanHistoryActivity : BaseActivity(), SwipeController.Actions {
                     daoSession.historyProductDao.deleteAll()
                     adapter.products.clear()
                     adapter.notifyDataSetChanged()
+                    showMenuButtons = false
+                    invalidateOptionsMenu()
 
                     binding.emptyHistoryInfo.visibility = View.VISIBLE
                     binding.scanFirst.visibility = View.VISIBLE
@@ -253,13 +260,15 @@ class ScanHistoryActivity : BaseActivity(), SwipeController.Actions {
         } else {
             val baseDir = File(Environment.getExternalStorageDirectory(), getCsvFolderName())
             if (!baseDir.exists()) baseDir.mkdirs()
-            writeHistoryToFile(this, adapter.products, File(baseDir, fileName))
+            val file = File(baseDir, fileName)
+            writeHistoryToFile(this, adapter.products, Uri.fromFile(file),file.outputStream())
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    val fileWriterLauncher = registerForActivityResult(CreateCSVContract())
-    { writeHistoryToFile(this, adapter.products, it?.toFile() ?: error("File path must not be null.")) }
+    val fileWriterLauncher = registerForActivityResult(CreateCSVContract()) {
+        writeHistoryToFile(this, adapter.products, it,contentResolver.openOutputStream(it)?: error("File path must not be null."))
+    }
 
     private fun startScan() {
         if (!isHardwareCameraInstalled(baseContext)) return
@@ -339,9 +348,10 @@ class ScanHistoryActivity : BaseActivity(), SwipeController.Actions {
                         binding.historyProgressbar.visibility = View.GONE
                         binding.emptyHistoryInfo.visibility = View.VISIBLE
                         binding.scanFirst.visibility = View.VISIBLE
-                        invalidateOptionsMenu()
                         return@flatMapCompletable Completable.complete()
                     }
+                    showMenuButtons = true
+                    invalidateOptionsMenu()
                     adapter.products.addAll(newProducts)
                     adapter.products.customSortBy(sortType)
                     adapter.notifyDataSetChanged()
